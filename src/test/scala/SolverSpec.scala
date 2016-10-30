@@ -36,30 +36,9 @@ class SolverSpec extends FlatSpec with Matchers {
     Array(0, 0, 0, 0, 0, 0, 0, 0, 0)))
   val emptySolver = new Solver(emptyPuzzle)
 
-  "otherCellCoords" should "return the coords of other squares in the same cell for (0,0)" in {
-    solver.otherCellCoords((0, 0)) shouldBe Array((0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2))
-  }
-  it should "return the coords of other squares in the same cell for (5,1)" in {
-    solver.otherCellCoords((5, 1)) shouldBe Array((3, 0), (3, 1), (3, 2), (4, 0), (4, 1), (4, 2), (5, 0), (5, 2))
-  }
-
-  "otherRowCoords" should "return the column coord of other squares in the same row for (0,0)" in {
-    solver.otherRowCoords((0, 0)) shouldBe Array(1, 2, 3, 4, 5, 6, 7, 8)
-  }
-  it should "return the column coord of other squares in the same row for (5,4)" in {
-    solver.otherRowCoords((5, 4)) shouldBe Array(0, 1, 2, 3, 4, 6, 7, 8)
-  }
-
-  "otherColCoords" should "return the row coord of other squares in the same row for (0,0)" in {
-    solver.otherColCoords((0, 0)) shouldBe Array(1, 2, 3, 4, 5, 6, 7, 8)
-  }
-  it should "return the row coord of other squares in the same row for (5,4)" in {
-    solver.otherColCoords((5, 4)) shouldBe Array(0, 1, 2, 3, 5, 6, 7, 8)
-  }
-
   "rowSolve" should "reduce the possible values of a given square depending on the other squares in the row and flag madeProgress" in {
     solver.rowSolve((0, 0))
-    puzzle.unsolvedSquares((0, 0)) shouldBe Array(1, 4, 5, 7, 8, 9)
+    puzzle.unsolvedSquares((0, 0)) shouldBe Array(4, 5)
     puzzle.madeProgress shouldBe true
   }
   it should "update the given square on the board if there is only one possible value left" in {
@@ -70,8 +49,8 @@ class SolverSpec extends FlatSpec with Matchers {
   }
 
   "colSolve" should "reduce the possible values of a given square depending on the other squares in the column and flag madeProgress" in {
-    solver.colSolve((0, 0))
-    puzzle.unsolvedSquares((0, 0)) shouldBe Array(1, 4, 5)
+    solver.colSolve((1, 4))
+    puzzle.unsolvedSquares((1, 4)) shouldBe Array(4,7)
     puzzle.madeProgress shouldBe true
   }
   it should "update the given square on the board if there is only one possible value left" in {

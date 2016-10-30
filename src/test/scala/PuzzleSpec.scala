@@ -15,14 +15,35 @@ class PuzzleSpec extends FlatSpec with Matchers {
   val solver = new Solver(puzzle)
 
   "removeSquarePossibilities" should "remove the given values as possibilities for a given square" in {
-    puzzle.removeSquarePossibilities((0, 0), List(9, 3, 2))
-    puzzle.unsolvedSquares((0, 0)) shouldBe Array(1, 4, 5, 6, 7, 8)
+    puzzle.removeSquarePossibilities((0, 0), List(5))
+    puzzle.unsolvedSquares((0, 0)) shouldBe Array(4)
   }
 
   "updateSquare" should "update the given square on the board and remove the possible values of a square" in {
     puzzle.updateSquare((0, 1), 8)
     puzzle.board(0)(1) shouldBe 8
     puzzle.unsolvedSquares.contains((0, 1)) shouldBe false
+  }
+
+  "otherCellCoords" should "return the coords of other squares in the same cell for (0,0)" in {
+    puzzle.otherCellCoords((0, 0)) shouldBe Array((0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2))
+  }
+  it should "return the coords of other squares in the same cell for (5,1)" in {
+    puzzle.otherCellCoords((5, 1)) shouldBe Array((3, 0), (3, 1), (3, 2), (4, 0), (4, 1), (4, 2), (5, 0), (5, 2))
+  }
+
+  "otherRowCoords" should "return the column coord of other squares in the same row for (0,0)" in {
+    puzzle.otherRowCoords((0, 0)) shouldBe Array(1, 2, 3, 4, 5, 6, 7, 8)
+  }
+  it should "return the column coord of other squares in the same row for (5,4)" in {
+    puzzle.otherRowCoords((5, 4)) shouldBe Array(0, 1, 2, 3, 4, 6, 7, 8)
+  }
+
+  "otherColCoords" should "return the row coord of other squares in the same row for (0,0)" in {
+    puzzle.otherColCoords((0, 0)) shouldBe Array(1, 2, 3, 4, 5, 6, 7, 8)
+  }
+  it should "return the row coord of other squares in the same row for (5,4)" in {
+    puzzle.otherColCoords((5, 4)) shouldBe Array(0, 1, 2, 3, 5, 6, 7, 8)
   }
 
 
