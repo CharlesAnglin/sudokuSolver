@@ -64,7 +64,7 @@ class SolverSpec extends FlatSpec with Matchers {
   }
   it should "update the given square on the board if there is only one possible value left" in {
     puzzle.removeSquarePossibilities((0, 1), List(1, 3, 4, 5, 7, 9))
-    solver.rowSolve((0,1))
+    solver.rowSolve((0, 1))
     puzzle.board(0)(1) shouldBe 8
     puzzle.unsolvedSquares.contains((0, 1)) shouldBe false
   }
@@ -76,7 +76,7 @@ class SolverSpec extends FlatSpec with Matchers {
   }
   it should "update the given square on the board if there is only one possible value left" in {
     puzzle.removeSquarePossibilities((0, 3), List(4, 5))
-    solver.colSolve((0,3))
+    solver.colSolve((0, 3))
     puzzle.board(0)(3) shouldBe 9
     puzzle.unsolvedSquares.contains((0, 3)) shouldBe false
   }
@@ -87,8 +87,8 @@ class SolverSpec extends FlatSpec with Matchers {
     puzzle.madeProgress shouldBe true
   }
   it should "update the given square on the board if there is only one possible value left" in {
-    puzzle.removeSquarePossibilities((0, 5), List(4,7,9))
-    solver.cellSolve((0,5))
+    puzzle.removeSquarePossibilities((0, 5), List(4, 7, 9))
+    solver.cellSolve((0, 5))
     puzzle.board(0)(5) shouldBe 1
     puzzle.unsolvedSquares.contains((0, 5)) shouldBe false
   }
