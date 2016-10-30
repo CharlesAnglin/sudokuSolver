@@ -93,6 +93,36 @@ class SolverSpec extends FlatSpec with Matchers {
     puzzle.unsolvedSquares.contains((0, 5)) shouldBe false
   }
 
+  "rowCompareSolve" should "update the given square on the board if there is only one possible for it when comparing to the rest of the row" in {
+    puzzle.removeSquarePossibilities((1, 2), List(6))
+    puzzle.removeSquarePossibilities((1, 4), List(6))
+    puzzle.removeSquarePossibilities((1, 6), List(6))
+    puzzle.removeSquarePossibilities((1, 7), List(6))
+    solver.rowCompareSolve((1, 1))
+    puzzle.board(1)(1) shouldBe 6
+    puzzle.unsolvedSquares.contains((1, 1)) shouldBe false
+  }
+
+  "colCompareSolve" should "update the given square on the board if there is only one possible for it when comparing to the rest of the col" in {
+    puzzle.removeSquarePossibilities((2, 8), List(7))
+    puzzle.removeSquarePossibilities((3, 8), List(7))
+    puzzle.removeSquarePossibilities((5, 8), List(7))
+    puzzle.removeSquarePossibilities((6, 8), List(7))
+    puzzle.removeSquarePossibilities((8, 8), List(7))
+    solver.colCompareSolve((0, 8))
+    puzzle.board(0)(8) shouldBe 7
+    puzzle.unsolvedSquares.contains((0, 8)) shouldBe false
+  }
+
+  "cellCompareSolve" should "update the given square on the board if there is only one possible for it when comparing to the rest of the cell" in {
+    puzzle.removeSquarePossibilities((0, 0), List(7))
+    puzzle.removeSquarePossibilities((2, 0), List(7))
+    puzzle.removeSquarePossibilities((2, 1), List(7))
+    solver.cellCompareSolve((1, 2))
+    puzzle.board(1)(2) shouldBe 7
+    puzzle.unsolvedSquares.contains((1, 2)) shouldBe false
+  }
+
   "solve" should "print a message if it cannot solve the puzzle" in {
     val stream = new java.io.ByteArrayOutputStream()
     Console.withOut(stream) {

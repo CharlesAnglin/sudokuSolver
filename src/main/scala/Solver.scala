@@ -14,11 +14,14 @@ class Solver(puzzle: Puzzle) {
       unsolvedSquaresIterator(rowSolve)
       unsolvedSquaresIterator(colSolve)
       unsolvedSquaresIterator(cellSolve)
+      unsolvedSquaresIterator(rowCompareSolve)
+      unsolvedSquaresIterator(colCompareSolve)
+      unsolvedSquaresIterator(cellCompareSolve)
       if (puzzle.unsolvedSquares.isEmpty) {
         solved = true
       }
       iterations += 1
-      if(iterations%10==0){
+      if (iterations % 10 == 0) {
         println(puzzle.title + " iterations: " + iterations)
       }
     }
@@ -29,7 +32,7 @@ class Solver(puzzle: Puzzle) {
   }
 
   def otherCellCoords(coord: (Int, Int)) = {
-    var cellCoords = Array.tabulate(3, 3)((a, b) => (a, b)).flatten //could be inefficient - replace with for loop?
+    var cellCoords = Array.tabulate(3, 3)((a, b) => (a, b)).flatten
     cellCoords = cellCoords.filter(_ !=(coord._1 % 3, coord._2 % 3))
     var coordAddition = (0, 0)
     coord._1 match {
@@ -82,6 +85,53 @@ class Solver(puzzle: Puzzle) {
     }
     if (puzzle.unsolvedSquares(coord).length == 1) {
       puzzle.updateSquare(coord, puzzle.unsolvedSquares(coord)(0))
+    }
+  }
+
+  def compareHelper(value: Int, otherCoords: Array[(Int, Int)], contained: Boolean = false): Boolean = {
+    if (otherCoords.isEmpty || contained == true) {
+      return contained
+    } else {
+      compareHelper(value, otherCoords.tail, puzzle.unsolvedSquares(otherCoords.head).contains(value))
+    }
+  }
+
+  def rowCompareSolve(coord: (Int, Int)): Unit = {
+    rowSolve(coord)
+    if (puzzle.unsolvedSquares.contains(coord)) {
+      for (possibility <- puzzle.unsolvedSquares(coord)) {
+        val otherCoords = otherColCoords(coord).map(b => (coord._1, b)).filter(puzzle.unsolvedSquares.contains(_))
+        if (!compareHelper(possibility, otherCoords)) {
+          puzzle.updateSquare(coord, possibility)
+          puzzle.madeProgress = true
+        }
+      }
+    }
+  }
+
+  def colCompareSolve(coord: (Int, Int)): Unit = {
+    colSolve(coord)
+    if (puzzle.unsolvedSquares.contains(coord)) {
+      for (possibility <- puzzle.unsolvedSquares(coord)) {
+        val otherCoords = otherRowCoords(coord).map(a => (a, coord._2)).filter(puzzle.unsolvedSquares.contains(_))
+        if (!compareHelper(possibility, otherCoords)) {
+          puzzle.updateSquare(coord, possibility)
+          puzzle.madeProgress = true
+        }
+      }
+    }
+  }
+
+  def cellCompareSolve(coord: (Int, Int)): Unit = {
+    cellSolve(coord)
+    if (puzzle.unsolvedSquares.contains(coord)) {
+      for (possibility <- puzzle.unsolvedSquares(coord)) {
+        val otherCoords = otherCellCoords(coord).filter(puzzle.unsolvedSquares.contains(_))
+        if (!compareHelper(possibility, otherCoords)) {
+          puzzle.updateSquare(coord, possibility)
+          puzzle.madeProgress = true
+        }
+      }
     }
   }
 
