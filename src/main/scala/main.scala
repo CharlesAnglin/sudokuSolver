@@ -39,27 +39,8 @@ object main extends App {
   //  val solver = new Solver(puzzle)
 
   //    solver.solve
-  //
-  //  println("unsolved: ")
-  //  for(a <- puzzle.unsolvedSquares){
-  //    println(a._1 + " -> " + a._2.mkString(" "))
-  //  }
-  //  println()
-  //  println(puzzle.board.map(_.mkString(" ")).mkString("\n"))
 
-  //  val arrayMatrix = Array(
-  //    Array(0, 2, 3, 4, 5, 6, 7, 8, 9),
-  //    Array(1, 2, 3, 4, 5, 6, 7, 8, 9),
-  //    Array(1, 2, 3, 4, 5, 6, 7, 8, 9),
-  //    Array(1, 2, 3, 4, 5, 6, 7, 8, 9),
-  //    Array(1, 2, 3, 4, 5, 6, 7, 8, 9),
-  //    Array(1, 2, 3, 0, 5, 6, 7, 8, 9),
-  //    Array(1, 2, 3, 4, 5, 6, 7, 8, 9),
-  //    Array(1, 2, 3, 4, 5, 6, 7, 8, 9),
-  //    Array(1, 2, 3, 4, 5, 6, 7, 8, 9)
-  //  )
-  //
-  //  val puzzle = new Puzzle(arrayMatrix)
+  //  println(puzzle.board.map(_.mkString(" ")).mkString("\n"))
 
 
   var puzzles = Translator.createPuzzles("sudoku.txt")
@@ -82,5 +63,5 @@ object main extends App {
 
 
   // with rowSolve, colSolve, cellSolve we solve 12/50
-  // adding compareSolves we solve __/50
+  // adding compareSolves we solve 40/50
 }
