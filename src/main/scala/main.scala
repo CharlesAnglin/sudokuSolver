@@ -80,4 +80,7 @@ object main extends App {
 
   elapsedTime(start)
 
+
+  // with rowSolve, colSolve, cellSolve we solve 12/50
+  // adding compareSolves we solve __/50
 }
