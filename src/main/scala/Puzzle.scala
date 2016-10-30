@@ -20,9 +20,6 @@ class Puzzle(val title: String, val board: Array[Array[Int]]) {
       if (!value.tail.isEmpty) helper(value.tail)
     }
     helper(value)
-    if (unsolvedSquares(coord).length == 1) {
-      updateSquare(coord, unsolvedSquares(coord)(0))
-    }
   }
 
   def updateSquare(coord: (Int, Int), value: Int) = {

@@ -2,29 +2,34 @@ class Solver(puzzle: Puzzle) {
 
   def solve = {
 
-    def unsolvedSquaresIterator(solver: Tuple2[Int, Int] => Unit) = {
-      for (coordAndPossibilities <- puzzle.unsolvedSquares) {
-        solver(coordAndPossibilities._1)
-      }
-    }
+//    for (coordAndPossibilities <- puzzle.unsolvedSquares) {
+//      rowSolve(coordAndPossibilities._1)
+//    }
+//    for (coordAndPossibilities <- puzzle.unsolvedSquares) {
+//      colSolve(coordAndPossibilities._1)
+//    }
 
-    var solved = false
-    while (puzzle.madeProgress == true && solved == false) {
-      println(puzzle.title + " ONE ITTERATION")
-      puzzle.madeProgress = false
-      rowSolve((2,2))
-      rowSolve((6,6))
-      rowSolve((7,1))
-//      unsolvedSquaresIterator(rowSolve)
-//      unsolvedSquaresIterator(colSolve)
-//      unsolvedSquaresIterator(cellSolve)
-      if (puzzle.unsolvedSquares.isEmpty) {
-        solved == true
-      }
-    }
-    if (puzzle.madeProgress == false) {
-      println("Cannot solve puzzle: " + puzzle.title)
-    }
+
+        def unsolvedSquaresIterator(solver: Tuple2[Int, Int] => Unit) = {
+          for (coordAndPossibilities <- puzzle.unsolvedSquares) {
+            solver(coordAndPossibilities._1)
+          }
+        }
+
+        var solved = false
+        while (puzzle.madeProgress == true && solved == false) {
+          println(puzzle.title + " ONE ITTERATION")
+          puzzle.madeProgress = false
+          unsolvedSquaresIterator(rowSolve)
+          unsolvedSquaresIterator(colSolve)
+          unsolvedSquaresIterator(cellSolve)
+          if (puzzle.unsolvedSquares.isEmpty) {
+            solved == true
+          }
+        }
+        if (puzzle.madeProgress == false) {
+          println("Cannot solve puzzle: " + puzzle.title)
+        }
   }
 
   def otherCellCoords(coord: (Int, Int)) = {
@@ -48,30 +53,39 @@ class Solver(puzzle: Puzzle) {
 
   def otherColCoords(coord: (Int, Int)) = (0 to 8).toArray.filter(_ != coord._2)
 
-  def rowSolve(coord: (Int, Int)) = {
+  def rowSolve(coord: (Int, Int)): Unit = {
     for (colCoord <- otherColCoords(coord)) {
       if (puzzle.unsolvedSquares(coord).contains(puzzle.board(coord._1)(colCoord))) {
         puzzle.removeSquarePossibilities(coord, List(puzzle.board(coord._1)(colCoord)))
         puzzle.madeProgress = true
       }
     }
+    if (puzzle.unsolvedSquares(coord).length == 1) {
+      puzzle.updateSquare(coord, puzzle.unsolvedSquares(coord)(0))
+    }
   }
 
-  def colSolve(coord: (Int, Int)) = {
+  def colSolve(coord: (Int, Int)): Unit = {
     for (rowCoord <- otherRowCoords(coord)) {
       if (puzzle.unsolvedSquares(coord).contains(puzzle.board(rowCoord)(coord._2))) {
         puzzle.removeSquarePossibilities(coord, List(puzzle.board(rowCoord)(coord._2)))
         puzzle.madeProgress = true
       }
     }
+    if (puzzle.unsolvedSquares(coord).length == 1) {
+      puzzle.updateSquare(coord, puzzle.unsolvedSquares(coord)(0))
+    }
   }
 
-  def cellSolve(coord: (Int, Int)) = {
+  def cellSolve(coord: (Int, Int)): Unit = {
     for (cellCoord <- otherCellCoords(coord)) {
       if (puzzle.unsolvedSquares(coord).contains(puzzle.board(cellCoord._1)(cellCoord._2))) {
         puzzle.removeSquarePossibilities(coord, List(puzzle.board(cellCoord._1)(cellCoord._2)))
         puzzle.madeProgress = true
       }
+    }
+    if (puzzle.unsolvedSquares(coord).length == 1) {
+      puzzle.updateSquare(coord, puzzle.unsolvedSquares(coord)(0))
     }
   }
 

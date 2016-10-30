@@ -18,11 +18,6 @@ class PuzzleSpec extends FlatSpec with Matchers {
     puzzle.removeSquarePossibilities((0, 0), List(9, 3, 2))
     puzzle.unsolvedSquares((0, 0)) shouldBe Array(1, 4, 5, 6, 7, 8)
   }
-  it should "update the given square on the board if there is only one possible value left" in {
-    puzzle.removeSquarePossibilities((0, 0), List(1, 5, 6, 7, 8))
-    puzzle.board(0)(0) shouldBe 4
-    puzzle.unsolvedSquares.contains((0, 0)) shouldBe false
-  }
 
   "updateSquare" should "update the given square on the board and remove the possible values of a square" in {
     puzzle.updateSquare((0, 1), 8)

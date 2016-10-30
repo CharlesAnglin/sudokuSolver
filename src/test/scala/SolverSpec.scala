@@ -62,17 +62,35 @@ class SolverSpec extends FlatSpec with Matchers {
     puzzle.unsolvedSquares((0, 0)) shouldBe Array(1, 4, 5, 7, 8, 9)
     puzzle.madeProgress shouldBe true
   }
+  it should "update the given square on the board if there is only one possible value left" in {
+    puzzle.removeSquarePossibilities((0, 1), List(1, 3, 4, 5, 7, 9))
+    solver.rowSolve((0,1))
+    puzzle.board(0)(1) shouldBe 8
+    puzzle.unsolvedSquares.contains((0, 1)) shouldBe false
+  }
 
   "colSolve" should "reduce the possible values of a given square depending on the other squares in the column and flag madeProgress" in {
     solver.colSolve((0, 0))
     puzzle.unsolvedSquares((0, 0)) shouldBe Array(1, 4, 5)
     puzzle.madeProgress shouldBe true
   }
+  it should "update the given square on the board if there is only one possible value left" in {
+    puzzle.removeSquarePossibilities((0, 3), List(4, 5))
+    solver.colSolve((0,3))
+    puzzle.board(0)(3) shouldBe 9
+    puzzle.unsolvedSquares.contains((0, 3)) shouldBe false
+  }
 
   "cellSolve" should "reduce the possible values of a given square depending on the other squares in the cell and flag madeProgress" in {
     solver.cellSolve((0, 0))
     puzzle.unsolvedSquares((0, 0)) shouldBe Array(4, 5)
     puzzle.madeProgress shouldBe true
+  }
+  it should "update the given square on the board if there is only one possible value left" in {
+    puzzle.removeSquarePossibilities((0, 5), List(4,7,9))
+    solver.cellSolve((0,5))
+    puzzle.board(0)(5) shouldBe 1
+    puzzle.unsolvedSquares.contains((0, 5)) shouldBe false
   }
 
   "solve" should "print a message if it cannot solve the puzzle" in {
@@ -84,6 +102,5 @@ class SolverSpec extends FlatSpec with Matchers {
     puzzle.board shouldBe solution
     puzzle.unsolvedSquares.isEmpty shouldBe true
   }
-
 
 }
