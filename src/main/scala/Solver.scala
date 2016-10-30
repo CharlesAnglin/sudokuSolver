@@ -135,4 +135,17 @@ class Solver(puzzle: Puzzle) {
     }
   }
 
+  def alignedNumberSolve(): Unit = {
+    val cornerCoords = Array.tabulate(3,3)((a,b) => (a*3,b*3)).flatten  //get top left corner coord of each cell
+    for(cornerCoord <- cornerCoords){
+      val cellCoords = cornerCoord +: otherCellCoords(cornerCoord) //all 9 coords of a cell.
+      //find 2 or 3 possibilities which make a line and only appear on that line.
+    }
+  }
+
+
+
+
+
+
 }

@@ -35,6 +35,17 @@ class SolverSpec extends FlatSpec with Matchers {
     Array(0, 0, 0, 0, 0, 0, 0, 0, 0),
     Array(0, 0, 0, 0, 0, 0, 0, 0, 0)))
   val emptySolver = new Solver(emptyPuzzle)
+  val puzzle2 = new Puzzle("puzzle 2", Array( // puzzle2 is madeup - unsolvable
+    Array(0, 0, 3, 0, 2, 0, 6, 0, 0),
+    Array(9, 0, 0, 3, 0, 7, 0, 0, 1),
+    Array(0, 0, 1, 8, 0, 6, 4, 0, 0),
+    Array(0, 0, 8, 1, 0, 2, 9, 0, 0),
+    Array(7, 0, 0, 0, 0, 4, 0, 0, 8),    //solve (4,3), reduce (0,5)
+    Array(0, 0, 6, 7, 0, 8, 2, 0, 0),
+    Array(0, 0, 2, 6, 0, 9, 1, 0, 0),
+    Array(8, 0, 0, 2, 0, 3, 0, 0, 9),
+    Array(0, 0, 5, 0, 1, 0, 3, 0, 0)))
+  val solver2 = new Solver(puzzle2)
 
   "otherCellCoords" should "return the coords of other squares in the same cell for (0,0)" in {
     solver.otherCellCoords((0, 0)) shouldBe Array((0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2))
@@ -121,6 +132,10 @@ class SolverSpec extends FlatSpec with Matchers {
     solver.cellCompareSolve((1, 2))
     puzzle.board(1)(2) shouldBe 7
     puzzle.unsolvedSquares.contains((1, 2)) shouldBe false
+  }
+
+  "alignedNumberSolve" should "reduce the possible values of a square if there exists aligned possible values in another cell and flag madeProgress" in {
+
   }
 
   "solve" should "print a message if it cannot solve the puzzle" in {
