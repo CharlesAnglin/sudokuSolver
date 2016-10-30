@@ -35,12 +35,12 @@ class SolverSpec extends FlatSpec with Matchers {
     Array(0, 0, 0, 0, 0, 0, 0, 0, 0),
     Array(0, 0, 0, 0, 0, 0, 0, 0, 0)))
   val emptySolver = new Solver(emptyPuzzle)
-  val puzzle2 = new Puzzle("puzzle 2", Array( // puzzle2 is madeup - unsolvable
+  val puzzle2 = new Puzzle("puzzle 2", Array(// puzzle2 is madeup - unsolvable
     Array(0, 0, 3, 0, 2, 0, 6, 0, 0),
     Array(9, 0, 0, 3, 0, 7, 0, 0, 1),
     Array(0, 0, 1, 8, 0, 6, 4, 0, 0),
     Array(0, 0, 8, 1, 0, 2, 9, 0, 0),
-    Array(7, 0, 0, 0, 0, 4, 0, 0, 8),    //solve (4,3), reduce (0,5)
+    Array(7, 0, 0, 0, 0, 4, 0, 0, 8),  //alignNumberSolver should remove both 6 and 5 from (1,4), if not more
     Array(0, 0, 6, 7, 0, 8, 2, 0, 0),
     Array(0, 0, 2, 6, 0, 9, 1, 0, 0),
     Array(8, 0, 0, 2, 0, 3, 0, 0, 9),
@@ -135,7 +135,11 @@ class SolverSpec extends FlatSpec with Matchers {
   }
 
   "alignedNumberSolve" should "reduce the possible values of a square if there exists aligned possible values in another cell and flag madeProgress" in {
-
+    puzzle2.removeSquarePossibilities((8,3), List(5))
+    puzzle2.removeSquarePossibilities((8,5), List(5))
+    solver2.alignedNumberSolve
+    puzzle2.unsolvedSquares((1,4)).deep == Array(1,2,3,4,6,7,8,9).deep shouldBe true
+    puzzle2.madeProgress shouldBe true
   }
 
   "solve" should "print a message if it cannot solve the puzzle" in {

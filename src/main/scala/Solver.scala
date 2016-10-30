@@ -9,22 +9,33 @@ class Solver(puzzle: Puzzle) {
 
     var solved = false
     var iterations = 0
-    while (puzzle.madeProgress == true && solved == false) {
-      puzzle.madeProgress = false
-      unsolvedSquaresIterator(rowSolve)
-      unsolvedSquaresIterator(colSolve)
-      unsolvedSquaresIterator(cellSolve)
-      unsolvedSquaresIterator(rowCompareSolve)
-      unsolvedSquaresIterator(colCompareSolve)
-      unsolvedSquaresIterator(cellCompareSolve)
-      if (puzzle.unsolvedSquares.isEmpty) {
-        solved = true
-      }
-      iterations += 1
-      if (iterations % 10 == 0) {
-        println(puzzle.title + " iterations: " + iterations)
+
+    def standardSolve = {
+      while (puzzle.madeProgress == true && solved == false) {
+        puzzle.madeProgress = false
+        unsolvedSquaresIterator(rowSolve)
+        unsolvedSquaresIterator(colSolve)
+        unsolvedSquaresIterator(cellSolve)
+        unsolvedSquaresIterator(rowCompareSolve)
+        unsolvedSquaresIterator(colCompareSolve)
+        unsolvedSquaresIterator(cellCompareSolve)
+        if (puzzle.unsolvedSquares.isEmpty) {
+          solved = true
+        }
+        iterations += 1
+        if (iterations % 10 == 0) {
+          println(puzzle.title + " iterations: " + iterations)
+        }
       }
     }
+
+    //if you place alignedNumberSolve into the standardSolve function it causes only 42 to be solved - this probably
+    // means that there is an error in the alignedNumberSolve method causing a missed placed number to make a grid unsolvable.
+
+    standardSolve
+    alignedNumberSolve
+    standardSolve
+
     if (puzzle.madeProgress == false) {
       println("Cannot solve puzzle: " + puzzle.title)
     }
@@ -135,17 +146,134 @@ class Solver(puzzle: Puzzle) {
     }
   }
 
-  def alignedNumberSolve(): Unit = {
-    val cornerCoords = Array.tabulate(3,3)((a,b) => (a*3,b*3)).flatten  //get top left corner coord of each cell
-    for(cornerCoord <- cornerCoords){
-      val cellCoords = cornerCoord +: otherCellCoords(cornerCoord) //all 9 coords of a cell.
-      //find 2 or 3 possibilities which make a line and only appear on that line.
+  def alignedNumberSolve: Unit = {
+    val cornerCoords = Array.tabulate(3, 3)((a, b) => (a * 3, b * 3)).flatten
+    for (cornerCoord <- cornerCoords) {
+      val cellCoords = cornerCoord +: otherCellCoords(cornerCoord)
+
+      def squareCheck(coords: Array[(Int, Int)], value: Int, bool: Boolean = false): Boolean = {
+        if (coords.isEmpty) {
+          return bool
+        }
+        if (puzzle.unsolvedSquares(coords.head).contains(value)) {
+          return true
+        } else {
+          squareCheck(coords.tail, value, bool)
+        }
+      }
+
+      def rowCheck(row: Int) = {
+
+        def rowReduce(value: Int, rowCoords: Array[(Int, Int)]) = {
+          //flag made progress in here?
+          def helper(coords: Array[(Int, Int)], value: Int): Unit = {
+            if (!coords.isEmpty) {
+              if (puzzle.unsolvedSquares.contains(coords.head) && puzzle.unsolvedSquares(coords.head).contains(value)) {
+                puzzle.removeSquarePossibilities(coords.head, List(value))
+                puzzle.madeProgress = true
+              }
+              helper(coords.tail, value)
+            }
+          }
+
+          val otherSquares = cellCoords.filter(x => x._1 % 3 != row).filter(puzzle.unsolvedSquares.contains(_))
+          if (!squareCheck(otherSquares, value)) {
+            //filter correct?
+            val rowSquaresWithoutCellSquares = otherColCoords(rowCoords.head).map(b => (rowCoords.head._1, b)).filter(!rowCoords.contains(_))
+            helper(rowSquaresWithoutCellSquares, value)
+          }
+        }
+
+        val rowCoords = cellCoords.filter(x => x._1 % 3 == row).filter(puzzle.unsolvedSquares.contains(_)) //filter correct?
+        if (rowCoords.length == 3) {
+          for (possibility <- puzzle.unsolvedSquares(rowCoords.head)) {
+            if (puzzle.unsolvedSquares(rowCoords(1)).contains(possibility) && puzzle.unsolvedSquares(rowCoords.last).contains(possibility)) {
+              rowReduce(possibility, rowCoords)
+            }
+          }
+
+          for (possibility <- puzzle.unsolvedSquares(rowCoords.head)) {
+            if (puzzle.unsolvedSquares(rowCoords(1)).contains(possibility) && !puzzle.unsolvedSquares(rowCoords.last).contains(possibility)) {
+              rowReduce(possibility, rowCoords)
+            }
+            if (!puzzle.unsolvedSquares(rowCoords(1)).contains(possibility) && puzzle.unsolvedSquares(rowCoords.last).contains(possibility)) {
+              rowReduce(possibility, rowCoords)
+            }
+          }
+          for (possibility <- puzzle.unsolvedSquares(rowCoords(1))) {
+            if (!puzzle.unsolvedSquares(rowCoords.head).contains(possibility) && puzzle.unsolvedSquares(rowCoords.last).contains(possibility)) {
+              rowReduce(possibility, rowCoords)
+            }
+          }
+        }
+        if (rowCoords.length == 2) {
+          for (possibility <- puzzle.unsolvedSquares(rowCoords.head)) {
+            if (puzzle.unsolvedSquares(rowCoords.last).contains(possibility)) {
+              rowReduce(possibility, rowCoords)
+            }
+          }
+        }
+      }
+
+      def colCheck(col: Int) = {
+
+        def colReduce(value: Int, colCoords: Array[(Int, Int)]) = {
+          //flag made progress in here?
+          def helper(coords: Array[(Int, Int)], value: Int): Unit = {
+            if (!coords.isEmpty) {
+              if (puzzle.unsolvedSquares.contains(coords.head) && puzzle.unsolvedSquares(coords.head).contains(value)) {
+                puzzle.removeSquarePossibilities(coords.head, List(value))
+                puzzle.madeProgress = true
+              }
+              helper(coords.tail, value)
+            }
+          }
+
+          val otherSquares = cellCoords.filter(x => x._2 % 3 != col).filter(puzzle.unsolvedSquares.contains(_))
+          if (!squareCheck(otherSquares, value)) {
+            //filter correct?
+            val rowSquaresWithoutCellSquares = otherColCoords(colCoords.head).map(a => (a, colCoords.head._2)).filter(!colCoords.contains(_))
+            helper(rowSquaresWithoutCellSquares, value)
+          }
+        }
+
+        val colCoords = cellCoords.filter(x => x._2 % 3 == col).filter(puzzle.unsolvedSquares.contains(_)) //filter correct?
+        if (colCoords.length == 3) {
+          for (possibility <- puzzle.unsolvedSquares(colCoords.head)) {
+            if (puzzle.unsolvedSquares(colCoords(1)).contains(possibility) && puzzle.unsolvedSquares(colCoords.last).contains(possibility)) {
+              colReduce(possibility, colCoords)
+            }
+          }
+
+          for (possibility <- puzzle.unsolvedSquares(colCoords.head)) {
+            if (puzzle.unsolvedSquares(colCoords(1)).contains(possibility) && !puzzle.unsolvedSquares(colCoords.last).contains(possibility)) {
+              colReduce(possibility, colCoords)
+            }
+            if (!puzzle.unsolvedSquares(colCoords(1)).contains(possibility) && puzzle.unsolvedSquares(colCoords.last).contains(possibility)) {
+              colReduce(possibility, colCoords)
+            }
+          }
+          for (possibility <- puzzle.unsolvedSquares(colCoords(1))) {
+            if (!puzzle.unsolvedSquares(colCoords.head).contains(possibility) && puzzle.unsolvedSquares(colCoords.last).contains(possibility)) {
+              colReduce(possibility, colCoords)
+            }
+          }
+        }
+        if (colCoords.length == 2) {
+          for (possibility <- puzzle.unsolvedSquares(colCoords.head)) {
+            if (puzzle.unsolvedSquares(colCoords.last).contains(possibility)) {
+              colReduce(possibility, colCoords)
+            }
+          }
+        }
+      }
+
+      for (num <- 0 to 2) {
+        rowCheck(num)
+        colCheck(num)
+      }
     }
   }
-
-
-
-
 
 
 }
