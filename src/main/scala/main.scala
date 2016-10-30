@@ -38,7 +38,7 @@ object main extends App {
     Array(0, 0, 5, 0, 1, 0, 3, 0, 0)))
   val solver = new Solver(puzzle)
 
-//    solver.solve
+    solver.solve
 //
 //  println("unsolved: ")
 //  for(a <- puzzle.unsolvedSquares){

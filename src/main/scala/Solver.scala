@@ -8,6 +8,7 @@ class Solver(puzzle: Puzzle) {
     }
 
     var solved = false
+    var iterations = 0
     while (puzzle.madeProgress == true && solved == false) {
       puzzle.madeProgress = false
       unsolvedSquaresIterator(rowSolve)
@@ -16,10 +17,15 @@ class Solver(puzzle: Puzzle) {
       if (puzzle.unsolvedSquares.isEmpty) {
         solved = true
       }
+      iterations += 1
+      if(iterations%10==0){
+        println(puzzle.title + " iterations: " + iterations)
+      }
     }
     if (puzzle.madeProgress == false) {
       println("Cannot solve puzzle: " + puzzle.title)
     }
+    println(puzzle.title + " total iterations: " + iterations)
   }
 
   def otherCellCoords(coord: (Int, Int)) = {

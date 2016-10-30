@@ -101,8 +101,12 @@ class SolverSpec extends FlatSpec with Matchers {
     stream.toString.contains("Cannot solve puzzle: empty puzzle") shouldBe true
     emptyPuzzle.unsolvedSquares.isEmpty shouldBe false
   }
-  it should "solve a sudoku puzzle" in {
-    solver.solve
+  it should "solve a sudoku puzzle and print off the numbers of iterations" in {
+    val stream = new java.io.ByteArrayOutputStream()
+    Console.withOut(stream) {
+      solver.solve
+    }
+    stream.toString.contains("puzzle 1 total iterations:") shouldBe true
     puzzle.board shouldBe solution
     puzzle.unsolvedSquares.isEmpty shouldBe true
   }
