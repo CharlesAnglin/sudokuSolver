@@ -38,19 +38,14 @@ object main extends App {
     Array(0, 0, 5, 0, 1, 0, 3, 0, 0)))
   val solver = new Solver(puzzle)
 
-//  println(puzzle.unsolvedSquares.mkString(" "))
-    solver.solve
-//  solver.rowSolve((2,2))
-//  solver.rowSolve((6,6))
-//  solver.rowSolve((7,1))
-
-  println("unsolved: ")
-  for(a <- puzzle.unsolvedSquares){
-    println(a._1 + " -> " + a._2.mkString(" "))
-  }
-  println()
-  println(puzzle.board.map(_.mkString(" ")).mkString("\n"))
-
+//    solver.solve
+//
+//  println("unsolved: ")
+//  for(a <- puzzle.unsolvedSquares){
+//    println(a._1 + " -> " + a._2.mkString(" "))
+//  }
+//  println()
+//  println(puzzle.board.map(_.mkString(" ")).mkString("\n"))
 
 //  val arrayMatrix = Array(
 //    Array(0, 2, 3, 4, 5, 6, 7, 8, 9),

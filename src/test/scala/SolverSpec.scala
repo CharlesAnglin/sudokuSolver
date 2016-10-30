@@ -94,7 +94,11 @@ class SolverSpec extends FlatSpec with Matchers {
   }
 
   "solve" should "print a message if it cannot solve the puzzle" in {
-    emptySolver.solve
+    val stream = new java.io.ByteArrayOutputStream()
+    Console.withOut(stream) {
+      emptySolver.solve
+    }
+    stream.toString.contains("Cannot solve puzzle: empty puzzle") shouldBe true
     emptyPuzzle.unsolvedSquares.isEmpty shouldBe false
   }
   it should "solve a sudoku puzzle" in {
