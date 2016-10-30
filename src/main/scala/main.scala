@@ -36,9 +36,9 @@ object main extends App {
     Array(0, 0, 2, 6, 0, 9, 5, 0, 0),
     Array(8, 0, 0, 2, 0, 3, 0, 0, 9),
     Array(0, 0, 5, 0, 1, 0, 3, 0, 0)))
-  val solver = new Solver(puzzle)
+//  val solver = new Solver(puzzle)
 
-    solver.solve
+//    solver.solve
 //
 //  println("unsolved: ")
 //  for(a <- puzzle.unsolvedSquares){
@@ -82,7 +82,7 @@ object main extends App {
 //  println(solver.otherColCoords((4,2)).mkString(" "))
 
 
-
+ var puzzles = Translator.createPuzzles("test.txt")
 
   elapsedTime(start)
 
